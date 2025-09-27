@@ -3,7 +3,7 @@
 
 This project uses AI to parse raw invoice text input, extracting customer and item details with quantity, price, and total calculations. It then dynamically generates an HTML invoice and converts it into a PDF using the PDFco API.
 
-![AI-Powered-Invoice-Extraction-and-PDF-GeneratorZ](sample.png)
+![AI-Powered-Invoice-Extraction-and-PDF-GeneratorZ](demo.png)
 ## Features
 
 - Robust natural language invoice data extraction
