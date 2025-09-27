@@ -1,0 +1,223 @@
+{
+  "name": "My workflow 5",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "id": "75885a1d-fa32-496f-a451-bcddf59018c5",
+      "name": "Telegram Trigger",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1,
+      "position": [
+        176,
+        -192
+      ],
+      "webhookId": "6563cb57-ba11-4465-9612-34429bf9bc23",
+      "credentials": {
+        "telegramApi": {
+          "id": "qeAAmbcu4wnI8zNt",
+          "name": "Telegram account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.message.text }}convert the user input into strict html format.And also the detauls of everything .\n",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        400,
+        -192
+      ],
+      "id": "2814de69-2cd5-4e9e-92b1-ee71d5c78cdd",
+      "name": "AI Agent",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.message.chat.id }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        464,
+        32
+      ],
+      "id": "fee161b4-2d15-4822-b219-d3755eda5ce2",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        320,
+        16
+      ],
+      "id": "28086bba-3f81-43fd-b764-b4d916822347",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "eyBTD1GQxX9S2YlT",
+          "name": "OpenAi account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "URL/HTML to PDF",
+        "convertType": "htmlToPDF",
+        "html": "={{ $json.output }}",
+        "advancedOptions": {
+          "name": "invoice"
+        }
+      },
+      "type": "n8n-nodes-pdfco.PDFco Api",
+      "typeVersion": 1,
+      "position": [
+        768,
+        -192
+      ],
+      "id": "4ee09147-8103-4e0b-964f-67cb17e68548",
+      "name": "PDFco Api",
+      "credentials": {
+        "pdfcoApi": {
+          "id": "2TpqXxFr0lwX8VtZ",
+          "name": "PDF.co account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1008,
+        -192
+      ],
+      "id": "7892f44c-ced3-4024-a10a-33b4b39c8f9e",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "operation": "sendDocument",
+        "chatId": "6427165683",
+        "binaryData": true,
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1264,
+        -192
+      ],
+      "id": "aca1b7f3-b522-4980-bcc3-be8e7b458af8",
+      "name": "Send a document",
+      "webhookId": "64812160-7435-40d0-878a-50c54ad4ee80",
+      "credentials": {
+        "telegramApi": {
+          "id": "qeAAmbcu4wnI8zNt",
+          "name": "Telegram account 3"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "PDFco Api",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PDFco Api": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Send a document",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "fe2715ca-9ca4-420a-9e87-c097feeadc05",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "2143bbab0046a29ff233d0225fd33fbe065863ee6490e9e4402496708a049faa"
+  },
+  "id": "9BSLk157cbezkASg",
+  "tags": []
+}

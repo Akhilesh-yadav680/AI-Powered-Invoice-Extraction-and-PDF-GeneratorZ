@@ -1,0 +1,4 @@
+# If Python used:
+requests
+flask
+some-ai-library
